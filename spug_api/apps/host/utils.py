@@ -186,8 +186,9 @@ def fetch_host_extend(ssh):
         "free -m | awk 'NR==2{print $2}'",
         "hostname -I",
         "cat /etc/os-release | grep PRETTY_NAME | awk -F \\\" '{print $2}'",
-        "fdisk -l | grep '^Disk /' | awk '{print $5}'",
-        "fdisk -l | grep '^磁盘 /' | awk '{print $4}' | awk -F'，' '{print $2}'"
+        "lsblk | grep '^[vs]d[ab]' | awk '{print $4}'"
+        # "fdisk -l | grep '^Disk /' | awk '{print $5}'",
+        # "fdisk -l | grep '^磁盘 /' | awk '{print $4}' | awk -F'，' '{print $2}'"
     ]
     code, out = ssh.exec_command(';'.join(commands))
     if code != 0:
@@ -207,7 +208,21 @@ def fetch_host_extend(ssh):
         elif index == 3:
             response['os_name'] = line
         else:
-            response['disk'].append(round(int(line) / 1024 / 1024 / 1024, 0))
+            # response['disk'].append(round(int(line) / 1024 / 1024 / 1024, 0))
+            for disk in line.split():
+                if disk.find('T'):
+                    disk_str = disk.rstrip('T')
+                    response['disk'].append(round(int(disk_str) * 1024, 0))
+                elif disk.find('G'):
+                    disk_str = disk.rstrip('G')
+                    response['disk'].append(round(int(disk_str), 0))
+                elif disk.find('M'):
+                    disk_str = disk.rstrip('M')
+                    response['disk'].append(round(int(disk_str) / 1024, 0))
+                elif disk.find('K'):
+                    disk_str = disk.rstrip('K')
+                    response['disk'].append(round(int(disk_str) / 1024 / 1024, 0))
+                # print(disk)
     return response
 
 
