@@ -10,7 +10,9 @@ from threading import Thread
 import requests
 import json
 
-spug_server = 'https://api.spug.cc'
+# spug_server = 'https://api.spug.cc'
+# notify_source = 'monitor'
+spug_server = ''
 notify_source = 'monitor'
 
 
