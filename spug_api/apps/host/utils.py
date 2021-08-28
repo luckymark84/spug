@@ -208,21 +208,19 @@ def fetch_host_extend(ssh):
         elif index == 3:
             response['os_name'] = line
         else:
-            # response['disk'].append(round(int(line) / 1024 / 1024 / 1024, 0))
             for disk in line.split():
-                if disk.find('T'):
+                if disk.find('T') == 2:
                     disk_str = disk.rstrip('T')
                     response['disk'].append(round(int(disk_str) * 1024, 0))
-                elif disk.find('G'):
+                elif disk.find('G') == 2:
                     disk_str = disk.rstrip('G')
                     response['disk'].append(round(int(disk_str), 0))
-                elif disk.find('M'):
+                elif disk.find('M') == 2:
                     disk_str = disk.rstrip('M')
                     response['disk'].append(round(int(disk_str) / 1024, 0))
-                elif disk.find('K'):
+                elif disk.find('K') == 2:
                     disk_str = disk.rstrip('K')
                     response['disk'].append(round(int(disk_str) / 1024 / 1024, 0))
-                # print(disk)
     return response
 
 
